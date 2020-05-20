@@ -105,6 +105,12 @@ services:
             - "9000:80"
         volumes:
         - ./default.json:/usr/share/nginx/html/config/default.json
+    
+    openinfoman:
+        container_name: openinfoman-ilr
+        image: openhie/openinfoman
+        ports:
+            - "8984:8984"
 
 volumes:
     mongodb-data:
