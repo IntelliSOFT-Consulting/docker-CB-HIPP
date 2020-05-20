@@ -9,7 +9,7 @@ services:
             - mongodb-data:/data/db
 
     dhis-db:
-        container_name: fr-db_demo
+        container_name: fr-db_cbhipp
         image: uwitech/postgresql
         env_file: .env
         volumes:
@@ -30,7 +30,7 @@ services:
             - openmrs-mysqldata:/var/lib/mysql
 
     openempi-db:
-        container_name: openempi-db_demo
+        container_name: openempi-db_cbhipp
         image: uwitech/postgresql
         ports:
             - "5433:5432"
@@ -59,7 +59,7 @@ services:
             - mongo
     
     ohie-fr:
-        container_name: ohie-fr-demo
+        container_name: ohie-fr-cbhipp
         env_file: .env
         image: uwitech/ohie-fr
         ports:
@@ -69,12 +69,12 @@ services:
 
     openxds:
         image: uwitech/openxds
-        container_name: openxds-demo
+        container_name: openxds-cbhipp
         depends_on:
             - postgresql-openxds
 
     openshr:
-        container_name: oshr-demo
+        container_name: oshr-cbhipp
         image: uwitech/oshr
         env_file: .env
         ports:
@@ -86,7 +86,7 @@ services:
             - shr-orientdata:/root/.OpenMRS/
 
     ohie-cr:
-        container_name: ohie-cr-demo
+        container_name: ohie-cr-cbhipp
         env_file: .env
         image: uwitech/ohie-cr
         ports:
