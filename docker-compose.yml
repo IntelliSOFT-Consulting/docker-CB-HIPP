@@ -108,7 +108,7 @@ services:
     
     openinfoman:
         container_name: openinfoman-ilr
-        image: openhie/openinfoman
+        image: openinfoman
         ports:
             - "8984:8984"
 
