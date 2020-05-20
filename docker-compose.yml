@@ -1,0 +1,114 @@
+version: "3"
+services:
+    mongo:
+        container_name: openhim-mongo
+        ports:
+        - "27017:27017"
+        image: mongo:3.4
+        volumes:
+            - mongodb-data:/data/db
+
+    dhis-db:
+        container_name: fr-db_demo
+        image: uwitech/postgresql
+        env_file: .env
+        volumes:
+            - fr-pgdata:/var/lib/postgresql/data  
+
+    postgresql-openxds:
+        container_name: postgresql-openxds
+        image: uwitech/postgresql
+        volumes:
+            - openxds-pgdata:/var/lib/postgresql/data
+    
+    openmrs-mysql-db:
+        container_name: openmrs-mysql-db
+        image: uwitech/mysql
+        command: --sql_mode="NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+        env_file: .env
+        volumes:
+            - openmrs-mysqldata:/var/lib/mysql
+
+    openempi-db:
+        container_name: openempi-db_demo
+        image: uwitech/postgresql
+        ports:
+            - "5433:5432"
+        volumes:
+            - cr-pgdata:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=openempi
+            - POSTGRES_DB=openempi
+            - POSTGRES_PASSWORD=openempi
+
+    core:
+        container_name: openhim-core
+        image: jembi/openhim-core
+        environment:
+            - mongo_url=mongodb://mongo/openhim
+            - mongo_atnaUrl=mongodb://mongo/openhim
+        ports:
+            - "8080:8080"
+            - "5000:5000"
+            - "5001:5001"
+            - "5050:5050"
+            - "5051:5051"
+            - "5052:5052"
+            - "7788:7788"
+        depends_on:
+            - mongo
+    
+    ohie-fr:
+        container_name: ohie-fr-demo
+        env_file: .env
+        image: uwitech/ohie-fr
+        ports:
+            - "8181:8080"
+        depends_on:
+            - dhis-db
+
+    openxds:
+        image: uwitech/openxds
+        container_name: openxds-demo
+        depends_on:
+            - postgresql-openxds
+
+    openshr:
+        container_name: oshr-demo
+        image: uwitech/oshr
+        env_file: .env
+        ports:
+            - "8081:8080"
+        depends_on:
+            - openmrs-mysql-db
+            - openxds
+        volumes:
+            - shr-orientdata:/root/.OpenMRS/
+
+    ohie-cr:
+        container_name: ohie-cr-demo
+        env_file: .env
+        image: uwitech/ohie-cr
+        ports:
+            - "5667:5666"
+        volumes:
+            - cr-orientdata:/data
+        depends_on:
+            - openempi-db
+
+    console:
+        container_name: openhim-console
+        image: jembi/openhim-console
+        ports:
+            - "9000:80"
+        volumes:
+        - ./default.json:/usr/share/nginx/html/config/default.json
+
+volumes:
+    mongodb-data:
+    fr-pgdata:
+    openxds-pgdata:
+    openmrs-mysqldata:
+    shr-orientdata:
+    cr-pgdata:
+    cr-orientdata:
