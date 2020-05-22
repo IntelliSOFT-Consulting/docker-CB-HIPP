@@ -57,6 +57,8 @@ services:
             - "7788:7788"
         depends_on:
             - mongo
+        volumes:
+            - ./xds-mediator.properties:/usr/src/app/mediator/xds-mediator.properties
     
     ohie-fr:
         container_name: ohie-fr-cbhipp
